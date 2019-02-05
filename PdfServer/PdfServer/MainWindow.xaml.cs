@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
 
 namespace PdfServer
 {
@@ -45,6 +46,11 @@ namespace PdfServer
             serverManage.online = true;
             serverThread.Start();
             Console.WriteLine("Starting server...");
+            outputLog.Text = "Starting server";
+
+            // Collect local ip address of server.
+            string serverIPPublic = new System.Net.WebClient().DownloadString("https://api.ipify.org");
+            serverIP.Content = "Server IP: "+ serverIPPublic;
 
             // Makes the box green for visual status that the server is running.
             ServerStatusIndicator.Value = 100;
@@ -54,6 +60,7 @@ namespace PdfServer
         {
             
             Console.WriteLine("Stopping server...");
+            outputLog.Text = "Stopping server";
             try
             {
                 ServerStatusIndicator.Value = 0;
@@ -63,6 +70,8 @@ namespace PdfServer
                 serverManage.server.Stop();
                 
                 Console.WriteLine("Server stopped.");
+                serverIP.Content = "Server IP:";
+                outputLog.Text = "";
             }
             catch(Exception a)
             {
